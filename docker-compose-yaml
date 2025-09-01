@@ -1,0 +1,11 @@
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: kibana
+    environment:
+      # Conecta ao Elasticsearch usando o IP da primeira EC2
+      ELASTICSEARCH_HOSTS: http://<IP_PRIVADO_DA_EC2_ELASTICSEARCH>:9200
+      xpack.security.enabled: false
+    ports:
+      - "5601:5601"
+    restart: unless-stopped
