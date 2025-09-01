@@ -9,6 +9,8 @@ services:
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - xpack.security.enabled=false
+      # Permite conexões de fora do localhost, essencial para a EC2
+      - network.host=0.0.0.0
     ulimits:
       memlock:
         soft: -1
@@ -19,7 +21,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     networks:
-      - gameplatform_network
+      - elastic_network
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200 || exit 1"]
       interval: 5s
@@ -30,7 +32,7 @@ services:
     image: docker.elastic.co/kibana/kibana:8.11.1
     container_name: kibana
     environment:
-      # Conecta ao Elasticsearch na mesma rede
+      # Conecta ao Elasticsearch usando o nome do serviço
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
       xpack.security.enabled: false
     ports:
@@ -39,14 +41,11 @@ services:
       elasticsearch:
         condition: service_healthy
     networks:
-      - gameplatform_network
+      - elastic_network
     restart: unless-stopped
 
 networks:
-  gameplatform_network:
-    name: gameplatform_network
-    external: true
+  elastic_network:
 
 volumes:
-
   es_data:
