@@ -269,24 +269,7 @@ create_db_payments() {
     local security_group=$(get_db_security_group)
     
     info "Criando banco MySQL para FCG Payments..."
-    aws rds create-db-instance \
-        --db-instance-identifier "$db_identifier" \
-        --db-instance-class "$DB_INSTANCE_CLASS" \
-        --engine mysql \
-        --engine-version "8.0.35" \
-        --master-username "$DB_USERNAME" \
-        --master-user-password "$password" \
-        --allocated-storage 20 \
-        --storage-type gp2 \
-        --db-name "$db_name" \
-        --vpc-security-group-ids "$security_group" \
-        --db-subnet-group-name "$subnet_group" \
-        --backup-retention-period 7 \
-        --storage-encrypted \
-        --multi-az false \
-        --publicly-accessible false \
-        --auto-minor-version-upgrade true \
-        --tags Key=Name,Value="$db_identifier" Key=Project,Value="$PROJECT_NAME" Key=Application,Value="payments" > /dev/null
+    aws rds create-db-instance  --db-instance-identifier "$db_identifier" --db-instance-class "$DB_INSTANCE_CLASS"  --engine mysql  --engine-version "8.0.35"  --master-username "$DB_USERNAME" --master-user-password "$password" --allocated-storage 20 --storage-type gp2 --db-name "$db_name" --vpc-security-group-ids "$security_group" --db-subnet-group-name "$subnet_group" --backup-retention-period 7 --storage-encrypted --multi-az false --publicly-accessible false --auto-minor-version-upgrade true --tags Key=Name,Value="$db_identifier" Key=Project,Value="$PROJECT_NAME" Key=Application,Value="payments" > /dev/null
     
     # Salvar credenciais
     cat >> .fcg-db-credentials << EOF
